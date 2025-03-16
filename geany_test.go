@@ -157,12 +157,27 @@ func (b *BrokenNIO) Write(in []byte) (n int, err error) {
 func TestBrokenLogoWriter(t *testing.T) {
 	target := BrokenNIO{}
 
-	assert.Error(t,
-		PrintLogoWriter(
-			&target,
-			"Logo {{ .Geany.GoVersion }}",
-			nil),
-		"simple writer no printing error")
+	err := PrintLogoWriter(
+		&target,
+		"Logo {{ .Geany.GoVersion }}",
+		nil)
+
+	assert.Error(t, err, "simple writer printing error")
+	assert.Errorf(t, err, "broken writer")
+	assert.Equal(t, err.Error(), "broken writer\nbroken writer", "not two broken writer errors")
+}
+
+func TestBrokenLogoWriterFallback(t *testing.T) {
+	target := BrokenNIO{N: 1}
+
+	err := PrintLogoWriter(
+		&target,
+		"Logo {{ .Geany.GoVersion }}",
+		nil)
+
+	assert.Error(t, err, "simple writer printing error")
+	assert.Errorf(t, err, "broken writer")
+	assert.Equal(t, err.Error(), "broken writer", "just one broken writer error")
 }
 
 func TestBrokenSimpleWriter(t *testing.T) {
@@ -173,4 +188,12 @@ func TestBrokenSimpleWriter(t *testing.T) {
 			&target,
 			nil),
 		"simple writer no printing error")
+}
+
+func TestBrokenLogo(t *testing.T) {
+	assert.Panics(t,
+		func() {
+			_ = PrintLogo("{{ .Geany }", nil)
+		},
+		"broken logo does not panic")
 }
