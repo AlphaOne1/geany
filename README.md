@@ -83,7 +83,12 @@
 geany
 =====
 
-*geany* is a library to easily print logos enriched with custom information using the Go templating engine. 
+*geany* is a library to easily print logos enriched with custom information using the Go templating engine.
+
+Writing a program and just wanting a nice logo for the start should be without hassles. *geany* aims to
+provide a smooth experience for developers that just want to show a nice logo and want to enrich it with
+some more information.
+
 
 Installation
 ------------
@@ -94,12 +99,13 @@ To install *geany*, you can use the following command:
 $ go get github.com/AlphaOne1/geany
 ```
 
+
 Getting Started
 ---------------
 
 ### Simple Case
 
-Assuming a file `logo.tmpl` as this one:
+Assuming a file `logo.tmpl` like this one:
 
 ```text
    ..
@@ -119,7 +125,7 @@ Assuming a file `logo.tmpl` as this one:
            `-=========-`
 ```
 
-a simple program to produce the logo could look like this:
+A simple program to produce the logo could look like this:
 
 ```go
 package main
@@ -158,10 +164,20 @@ This program produces the following output:
            `-=========-`
 ```
 
+*geany* provides these attributes inside `.Geany`
+
+| Name        | Description                                                                                               |
+|-------------|-----------------------------------------------------------------------------------------------------------|
+| GoVersion   | Go Version used to build the executable                                                                   |
+| VcsModified | Contains a `*` if the content of the repository was modified before the build, if version control is used |
+| VcsRevision | Revision of version control system, if used                                                               |
+| VcsTime     | Time of the revision in the version control system, if used                                               |
+
+
 ### User Provided Data
 
 Assuming that the *geany* supplied information is not enough, a user can provide additional data. This data
-is then accessible inside of the template using `.Value`. A modified example template could look like this:
+becomes accessible in the template using `.Value`. A modified example template could look like this:
 
 ```text
    ..      ________________________
@@ -181,7 +197,7 @@ is then accessible inside of the template using `.Value`. A modified example tem
            `-=========-`
 ```
 
-The Go program of the [simple case](#simple-case) has only to be slightly modifed, providing the new data.
+The Go program of the [simple case](#simple-case) needs only slight modification to provide the new data:
 
 ```go
 package main
@@ -224,7 +240,7 @@ This modified version would print now:
            `-=========-`
 ```
 
-Other than using a `struct`, also a `map` could be used to introduce the data into the template. The keys of the map
+Instead of using a `struct`, a `map` could be used to pass the data into the template. The keys of the map
 then take the place of the structure members.
 
 All examples can be found in [examples](examples) folder.
