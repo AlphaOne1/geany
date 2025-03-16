@@ -107,7 +107,7 @@ Getting Started
 
 Assuming a file `logo.tmpl` like this one:
 
-```text
+```gotemplate
    ..
   =≙≙=
  _.OO._
@@ -179,7 +179,7 @@ This program produces the following output:
 Assuming that the *geany* supplied information is not enough, a user can provide additional data. This data
 becomes accessible in the template using `.Value`. A modified example template could look like this:
 
-```text
+```gotemplate
    ..      ________________________
   =≙≙=    / {{ .Values.Greeting }}
  _.OO._  /
@@ -212,11 +212,16 @@ import (
 var logo string
 
 func main() {
-	_ = geany.PrintLogo(logo, &struct {
-		FeatureA bool
-		FeatureB bool
-        Greeting string
-	}{FeatureA: true, FeatureB: false, Greeting: "Hi Geany!"})
+	_ = geany.PrintLogo(logo,
+		&struct {
+			FeatureA bool
+			FeatureB bool
+			Greeting string
+		}{
+			FeatureA: true,
+			FeatureB: false,
+			Greeting: "Hi Geany!",
+		})
 }
 ```
 

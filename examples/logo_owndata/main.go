@@ -10,9 +10,14 @@ import (
 var logo string
 
 func main() {
-	_ = geany.PrintLogo(logo, &struct {
-		FeatureA bool
-		FeatureB bool
-		Greeting string
-	}{FeatureA: true, FeatureB: false, Greeting: "Hi Geany!"})
+	_ = geany.PrintLogo(logo,
+		&struct {
+			FeatureA bool
+			FeatureB bool
+			Greeting string
+		}{
+			FeatureA: true,
+			FeatureB: false,
+			Greeting: "Hi Geany!",
+		})
 }
