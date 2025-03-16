@@ -28,6 +28,8 @@ type logoData struct {
 	Values any
 }
 
+var getBuildInfo = debug.ReadBuildInfo
+
 // prepareLogoData collects the build information and the user provided data
 // into a logoData structure.
 func prepareLogoData(values any) logoData {
@@ -41,7 +43,7 @@ func prepareLogoData(values any) logoData {
 		Values: values,
 	}
 
-	if buildInfo, ok := debug.ReadBuildInfo(); ok {
+	if buildInfo, ok := getBuildInfo(); ok {
 		result.Geany.GoVersion = buildInfo.GoVersion
 
 		for _, s := range buildInfo.Settings {
@@ -71,7 +73,13 @@ func PrintSimpleWriter(w io.Writer, values any) error {
 		fmt.Printf("%s\n", os.Args[0])
 	}
 
-	return json.NewEncoder(w).Encode(revData)
+	err := json.NewEncoder(w).Encode(revData)
+
+	if err == nil {
+		_, err = fmt.Fprintln(w)
+	}
+
+	return err
 }
 
 // PrintSimple is a convenience wrapper around PrintSimpleWriter,
@@ -100,8 +108,9 @@ func PrintLogoWriter(w io.Writer, tmpl string, values any) error {
 		return errors.Join(err, PrintSimpleWriter(w, values))
 	}
 
-	fmt.Println()
-	return nil
+	_, err := fmt.Fprintln(w)
+
+	return err
 }
 
 // PrintLogo is a convenience wrapper around PrintLogoWriter,

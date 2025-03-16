@@ -1,16 +1,24 @@
 package main
 
 import (
-	"bytes"
 	"errors"
 	"fmt"
+	"os"
 	"runtime/debug"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
-func TestPrepareLogoData(t *testing.T) {
+func Must[T any](t T, err error) T {
+	if err != nil {
+		panic(err)
+	}
+
+	return t
+}
+
+func TestPrepareLogoDataNormal(t *testing.T) {
 	logoData := prepareLogoData(nil)
 
 	buildInfo, ok := debug.ReadBuildInfo()
@@ -24,32 +32,103 @@ func TestPrepareLogoData(t *testing.T) {
 	assert.Equal(t, logoData.Geany.GoVersion, buildInfo.GoVersion, fmt.Sprintf("Geany.GoVersion is not %s", buildInfo.GoVersion))
 }
 
-func TestPrintLogoWriter(t *testing.T) {
-	target := bytes.Buffer{}
+func TestPrepareLogoDataMocked(t *testing.T) {
+	old := getBuildInfo
+	getBuildInfo = func() (*debug.BuildInfo, bool) {
+		result := debug.BuildInfo{
+			GoVersion: "go1.0",
+			Path:      Must(os.Getwd()),
+			Main: debug.Module{
+				Path:    Must(os.Getwd()),
+				Version: "1.0",
+				Sum:     "deadbeafcafe",
+				Replace: nil,
+			},
+			Deps: nil,
+			Settings: []debug.BuildSetting{
+				{
+					Key:   "vcs.modified",
+					Value: "true",
+				},
+				{
+					Key:   "vcs.revision",
+					Value: "becafe",
+				},
+				{
+					Key:   "vcs.time",
+					Value: "2006-01-02 15:04:05",
+				},
+			},
+		}
 
-	assert.Nil(t, PrintLogoWriter(
-		&target,
-		"Logo {{ .Geany.GoVersion }}",
-		nil), "logo printing error")
+		return &result, true
+	}
 
-	buildInfo, ok := debug.ReadBuildInfo()
+	logoData := prepareLogoData(nil)
 
-	assert.True(t, ok, "build info not found in debug.ReadBuildInfo")
-	assert.Equal(t, target.String(), "Logo "+buildInfo.GoVersion, "Logo does not contain go version")
+	getBuildInfo = old
+
+	assert.Nil(t, logoData.Values)
+	assert.Equal(t, logoData.Geany.VcsModified, "*", "Geany.VcsModified is not *")
+	assert.Equal(t, logoData.Geany.VcsTime, "2006-01-02 15:04:05", "Geany.VcsTime is not desired timestamp")
+	assert.Equal(t, logoData.Geany.VcsRevision, "becafe", "Geany.VcsRevision is not 'becafe'")
+	assert.Equal(t, logoData.Geany.GoVersion, "go1.0", "Geany.GoVersion is not go1.0")
 }
 
-func TestPrintSimpleWriter(t *testing.T) {
-	target := bytes.Buffer{}
+func TestPrintLogo(t *testing.T) {
+	f, fErr := os.CreateTemp("", "testPrintLogo")
+
+	assert.NoError(t, fErr)
+
+	defer func() { assert.NoError(t, os.Remove(f.Name())) }()
+
+	save := os.Stdout
+	os.Stdout = f
+
+	printErr := PrintLogo(
+		"Logo {{ .Geany.GoVersion }}",
+		nil)
+
+	os.Stdout = save
+
+	assert.NoError(t, printErr, "logo printing error")
 
 	buildInfo, ok := debug.ReadBuildInfo()
 
 	assert.True(t, ok, "build info not found in debug.ReadBuildInfo")
-	assert.Nil(t, PrintSimpleWriter(&target, nil), "simple writer printing error")
 
-	assert.Contains(t, target.String(), `"GoVersion":"`+buildInfo.GoVersion+`"`)
-	assert.Contains(t, target.String(), `"VcsModified":""`)
-	assert.Contains(t, target.String(), `"VcsRevision":"unknown"`)
-	assert.Contains(t, target.String(), `"VcsTime":"unknown"`)
+	target, targetErr := os.ReadFile(f.Name())
+	assert.NoError(t, targetErr)
+
+	assert.Equal(t, string(target), "Logo "+buildInfo.GoVersion+"\n", "Logo does not contain go version")
+}
+
+func TestPrintSimple(t *testing.T) {
+	f, fErr := os.CreateTemp("", "testPrintLogo")
+
+	assert.NoError(t, fErr)
+
+	defer func() { assert.NoError(t, os.Remove(f.Name())) }()
+
+	save := os.Stdout
+	os.Stdout = f
+
+	printErr := PrintSimple(nil)
+	os.Stdout = save
+
+	assert.NoError(t, printErr, "simple writer printing error")
+
+	buildInfo, ok := debug.ReadBuildInfo()
+
+	assert.True(t, ok, "build info not found in debug.ReadBuildInfo")
+
+	target, targetErr := os.ReadFile(f.Name())
+	assert.NoError(t, targetErr)
+
+	assert.Contains(t, string(target), `"GoVersion":"`+buildInfo.GoVersion+`"`)
+	assert.Contains(t, string(target), `"VcsModified":""`)
+	assert.Contains(t, string(target), `"VcsRevision":"unknown"`)
+	assert.Contains(t, string(target), `"VcsTime":"unknown"`)
 }
 
 type BrokenNIO struct {
@@ -75,10 +154,10 @@ func (b *BrokenNIO) Write(in []byte) (n int, err error) {
 	return len(in), nil
 }
 
-func TestBrokenLogoWiter(t *testing.T) {
+func TestBrokenLogoWriter(t *testing.T) {
 	target := BrokenNIO{}
 
-	assert.NotNil(t,
+	assert.Error(t,
 		PrintLogoWriter(
 			&target,
 			"Logo {{ .Geany.GoVersion }}",
@@ -86,10 +165,10 @@ func TestBrokenLogoWiter(t *testing.T) {
 		"simple writer no printing error")
 }
 
-func TestBrokenSimpleWiter(t *testing.T) {
+func TestBrokenSimpleWriter(t *testing.T) {
 	target := BrokenNIO{}
 
-	assert.NotNil(t,
+	assert.Error(t,
 		PrintSimpleWriter(
 			&target,
 			nil),
