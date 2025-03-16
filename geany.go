@@ -73,7 +73,10 @@ func PrintSimpleWriter(w io.Writer, values any) error {
 		fmt.Printf("%s\n", os.Args[0])
 	}
 
-	err := json.NewEncoder(w).Encode(revData)
+	encoder := json.NewEncoder(w)
+	encoder.SetIndent("", "    ")
+
+	err := encoder.Encode(revData)
 
 	if err == nil {
 		_, err = fmt.Fprintln(w)

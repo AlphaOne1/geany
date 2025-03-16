@@ -128,10 +128,10 @@ func TestPrintSimple(t *testing.T) {
 	target, targetErr := os.ReadFile(f.Name())
 	assert.NoError(t, targetErr)
 
-	assert.Contains(t, string(target), `"GoVersion":"`+buildInfo.GoVersion+`"`)
-	assert.Contains(t, string(target), `"VcsModified":""`)
-	assert.Contains(t, string(target), `"VcsRevision":"unknown"`)
-	assert.Contains(t, string(target), `"VcsTime":"unknown"`)
+	assert.Contains(t, string(target), `"GoVersion": "`+buildInfo.GoVersion+`"`)
+	assert.Contains(t, string(target), `"VcsModified": ""`)
+	assert.Contains(t, string(target), `"VcsRevision": "unknown"`)
+	assert.Contains(t, string(target), `"VcsTime": "unknown"`)
 }
 
 type BrokenNIO struct {

@@ -248,4 +248,44 @@ This modified version would print now:
 Instead of using a `struct`, a `map` could be used to pass the data into the template. The keys of the map
 then take the place of the structure members.
 
+
+### Basic or Fallback Output
+
+*geany* offers a fallback mechanism, should a problem occur in normal logo output. Should normal operation fail, the
+`PrintSimple` function is employed to somehow give some information, without having the normal logo around.
+
+Note that the logo template itself is checked always and the program will report a broken logo template visibly. So this
+is __not__ intended to cover up poor logo template design.
+
+The following program uses `PrintSimple` directly:
+
+```go
+package main
+
+import (
+	_ "embed"
+
+	"github.com/AlphaOne1/geany"
+)
+
+func main() {
+	_ = geany.PrintSimple(nil)
+}
+```
+
+It produces the following output:
+
+```text
+./logo_simple
+{
+    "Geany": {
+        "VcsRevision": "5f4b130546ef200186692d4f88c83386f0c4ae98",
+        "VcsTime": "2025-03-16T03:21:23Z",
+        "VcsModified": "*",
+        "GoVersion": "go1.24.1"
+    },
+    "Values": null
+}
+```
+
 All examples can be found in [examples](examples) folder.
