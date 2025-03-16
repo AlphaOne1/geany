@@ -153,8 +153,8 @@ This program produces the following output:
 / \__/ \
  \_><_/
  |=%%=|      Build using go1.24.1
-  \  /                on unknown
-   \ \     from revision unknown 
+  \  /                on 2025-03-16T03:16:43Z
+   \ \     from revision ce78d813448120739f345efa679b2b244a42e679 
    / /
    |/
    (o)
@@ -234,8 +234,8 @@ This modified version would print now:
 / \__/ \
  \_><_/
  |=%%=|      Build using go1.24.1
-  \  /                on unknown
-   \ \     from revision unknown 
+  \  /                on 2025-03-16T03:16:43Z
+   \ \     from revision ce78d813448120739f345efa679b2b244a42e679 
    / /
    |/   Special Features A: enabled
    (o)                   B: disabled
