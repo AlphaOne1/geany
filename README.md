@@ -83,4 +83,148 @@
 geany
 =====
 
-*geany* is a library to easily print logos using the Go templating engine.
+*geany* is a library to easily print logos enriched with custom information using the Go templating engine. 
+
+Installation
+------------
+
+To install *geany*, you can use the following command:
+
+```bash
+$ go get github.com/AlphaOne1/geany
+```
+
+Getting Started
+---------------
+
+### Simple Case
+
+Assuming a file `logo.tmpl` as this one:
+
+```text
+   ..
+  =≙≙=
+ _.OO._
+/ \__/ \
+ \_><_/
+ |=%%=|      Build using {{ .Geany.GoVersion   }}
+  \  /                on {{ .Geany.VcsTime     }}
+   \ \     from revision {{ .Geany.VcsRevision }} {{ if eq .Geany.VcsModified "*" }} (modified) {{ end }}
+   / /
+   |/
+   (o)
+    \ \____.----(O)----..---.
+     `-__  o \_______/o \ O /
+         `\  O O O O O  /`-`
+           `-=========-`
+```
+
+a simple program to produce the logo could look like this:
+
+```go
+package main
+
+import (
+	_ "embed"
+
+	"github.com/AlphaOne1/geany"
+)
+
+//go:embed logo.tmpl
+var logo string
+
+func main() {
+	_ = geany.PrintLogo(logo, nil)
+}
+```
+
+This program produces the following output:
+
+```text
+   ..
+  =≙≙=
+ _.OO._
+/ \__/ \
+ \_><_/
+ |=%%=|      Build using go1.24.1
+  \  /                on unknown
+   \ \     from revision unknown 
+   / /
+   |/
+   (o)
+    \ \____.----(O)----..---.
+     `-__  o \_______/o \ O /
+         `\  O O O O O  /`-`
+           `-=========-`
+```
+
+### User Provided Data
+
+Assuming that the *geany* supplied information is not enough, a user can provide additional data. This data
+is then accessible inside of the template using `.Value`. A modified example template could look like this:
+
+```text
+   ..      ________________________
+  =≙≙=    / {{ .Values.Greeting }}
+ _.OO._  /
+/ \__/ \
+ \_><_/
+ |=%%=|      Build using {{ .Geany.GoVersion   }}
+  \  /                on {{ .Geany.VcsTime     }}
+   \ \     from revision {{ .Geany.VcsRevision }} {{ if eq .Geany.VcsModified "*" }} (modified) {{ end }}
+   / /
+   |/   Special Features A: {{ if .Values.FeatureA -}} enabled {{- else -}} disabled {{- end }}
+   (o)                   B: {{ if .Values.FeatureB -}} enabled {{- else -}} disabled {{- end }}
+    \ \____.----(O)----..---.
+     `-__  o \_______/o \ O /
+         `\  O O O O O  /`-`
+           `-=========-`
+```
+
+The Go program of the [simple case](#simple-case) has only to be slightly modifed, providing the new data.
+
+```go
+package main
+
+import (
+	_ "embed"
+
+	"github.com/AlphaOne1/geany"
+)
+
+//go:embed logo.tmpl
+var logo string
+
+func main() {
+	_ = geany.PrintLogo(logo, &struct {
+		FeatureA bool
+		FeatureB bool
+        Greeting string
+	}{FeatureA: true, FeatureB: false, Greeting: "Hi Geany!"})
+}
+```
+
+This modified version would print now:
+
+```text
+   ..      ________________________
+  =≙≙=    / Hi Geany!
+ _.OO._  /
+/ \__/ \
+ \_><_/
+ |=%%=|      Build using go1.24.1
+  \  /                on unknown
+   \ \     from revision unknown 
+   / /
+   |/   Special Features A: enabled
+   (o)                   B: disabled
+    \ \____.----(O)----..---.
+     `-__  o \_______/o \ O /
+         `\  O O O O O  /`-`
+           `-=========-`
+```
+
+Other than using a `struct`, also a `map` could be used to introduce the data into the template. The keys of the map
+then take the place of the structure members.
+
+All examples can be found in [examples](examples) folder.

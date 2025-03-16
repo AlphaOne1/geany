@@ -1,14 +1,14 @@
-   ..
-  =≙≙=
- _.OO._
+   ..      ________________________
+  =≙≙=    / {{ .Values.Greeting }}
+ _.OO._  /
 / \__/ \
  \_><_/
  |=%%=|      Build using {{ .Geany.GoVersion   }}
   \  /                on {{ .Geany.VcsTime     }}
    \ \     from revision {{ .Geany.VcsRevision }} {{ if eq .Geany.VcsModified "*" }} (modified) {{ end }}
    / /
-   |/
-   (o)
+   |/   Special Features A: {{ if .Values.FeatureA -}} enabled {{- else -}} disabled {{- end }}
+   (o)                   B: {{ if .Values.FeatureB -}} enabled {{- else -}} disabled {{- end }}
     \ \____.----(O)----..---.
      `-__  o \_______/o \ O /
          `\  O O O O O  /`-`
