@@ -1,4 +1,7 @@
-package main
+// Copyright the SonicWeb contributors.
+// SPDX-License-Identifier: MPL-2.0
+
+package geany
 
 import (
 	"errors"

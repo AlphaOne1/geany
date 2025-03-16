@@ -1,7 +1,7 @@
 // Copyright the SonicWeb contributors.
 // SPDX-License-Identifier: MPL-2.0
 
-package main
+package geany
 
 import (
 	"encoding/json"
