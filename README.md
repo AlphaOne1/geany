@@ -74,9 +74,9 @@
    / /
    |/
    (o)                    
-    \ \____.----(O)----..---.
-     `-__  o \_______/o \ O /
-         `\  O O O O O  /`-`
+    \ \____.----(O)----.,.---.
+     `-__  o \_______/ o | O |
+         `\  O O O O O  / `-`
            `-=========-`
 ```
 
@@ -119,9 +119,9 @@ Assuming a file `logo.tmpl` like this one:
    / /
    |/
    (o)
-    \ \____.----(O)----..---.
-     `-__  o \_______/o \ O /
-         `\  O O O O O  /`-`
+    \ \____.----(O)----.,.---.
+     `-__  o \_______/ o | O |
+         `\  O O O O O  / `-`
            `-=========-`
 ```
 
@@ -158,9 +158,9 @@ This program produces the following output:
    / /
    |/
    (o)
-    \ \____.----(O)----..---.
-     `-__  o \_______/o \ O /
-         `\  O O O O O  /`-`
+    \ \____.----(O)----.,.---.
+     `-__  o \_______/ o | O |
+         `\  O O O O O  / `-`
            `-=========-`
 ```
 
@@ -191,9 +191,9 @@ becomes accessible in the template using `.Value`. A modified example template c
    / /
    |/   Special Features A: {{ if .Values.FeatureA -}} enabled {{- else -}} disabled {{- end }}
    (o)                   B: {{ if .Values.FeatureB -}} enabled {{- else -}} disabled {{- end }}
-    \ \____.----(O)----..---.
-     `-__  o \_______/o \ O /
-         `\  O O O O O  /`-`
+    \ \____.----(O)----.,.---.
+     `-__  o \_______/ o | O |
+         `\  O O O O O  / `-`
            `-=========-`
 ```
 
@@ -239,9 +239,9 @@ This modified version would print now:
    / /
    |/   Special Features A: enabled
    (o)                   B: disabled
-    \ \____.----(O)----..---.
-     `-__  o \_______/o \ O /
-         `\  O O O O O  /`-`
+    \ \____.----(O)----.,.---.
+     `-__  o \_______/ o | O |
+         `\  O O O O O  / `-`
            `-=========-`
 ```
 
