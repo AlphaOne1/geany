@@ -54,12 +54,12 @@
         <img src="https://app.fossa.com/api/projects/git%2Bgithub.com%2FAlphaOne1%2Fgeany.svg?type=shield&issueType=security"
              alt="FOSSA Status">
     </a>
-    <!--<a href="https://godoc.org/github.com/AlphaOne1/geany"
+    <a href="https://godoc.org/github.com/AlphaOne1/geany"
        rel="external"
        target="_blank">
         <img src="https://godoc.org/github.com/AlphaOne1/geany?status.svg"
              alt="GoDoc Reference">
-    </a>-->
+    </a>
 </p>
 
 ```text
