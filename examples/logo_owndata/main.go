@@ -1,3 +1,6 @@
+// Copyright the geany contributors.
+// SPDX-License-Identifier: MPL-2.0
+
 package main
 
 import (
