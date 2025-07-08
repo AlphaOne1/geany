@@ -1,6 +1,7 @@
 // Copyright the geany contributors.
 // SPDX-License-Identifier: MPL-2.0
 
+// Package main contains the geany example with read logo from a file.
 package main
 
 import (

@@ -1,132 +1,69 @@
 // Copyright the geany contributors.
 // SPDX-License-Identifier: MPL-2.0
 
-package geany
+package geany_test
 
 import (
 	"errors"
-	"fmt"
 	"os"
 	"runtime/debug"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
+	"github.com/AlphaOne1/geany"
 )
 
-func Must[T any](t T, err error) T {
-	if err != nil {
-		panic(err)
-	}
-
-	return t
-}
-
-func TestPrepareLogoDataNormal(t *testing.T) {
-	logoData := prepareLogoData(nil)
-
-	buildInfo, ok := debug.ReadBuildInfo()
-
-	assert.True(t, ok, "build info not found in debug.ReadBuildInfo")
-
-	assert.Nil(t, logoData.Values)
-	assert.Empty(t, logoData.Geany.VcsModified, "", "Geany.VcsModified is not empty")
-	assert.Equal(t, logoData.Geany.VcsTime, "unknown", "Geany.VcsTime is not unknown")
-	assert.Equal(t, logoData.Geany.VcsRevision, "unknown", "Geany.VcsRevision is not unknown")
-	assert.Equal(t, logoData.Geany.GoVersion, buildInfo.GoVersion, fmt.Sprintf("Geany.GoVersion is not %s", buildInfo.GoVersion))
-}
-
-func TestPrepareLogoDataMocked(t *testing.T) {
-	old := getBuildInfo
-	getBuildInfo = func() (*debug.BuildInfo, bool) {
-		result := debug.BuildInfo{
-			GoVersion: "go1.0",
-			Path:      Must(os.Getwd()),
-			Main: debug.Module{
-				Path:    Must(os.Getwd()),
-				Version: "1.0",
-				Sum:     "deadbeafcafe",
-				Replace: nil,
-			},
-			Deps: nil,
-			Settings: []debug.BuildSetting{
-				{
-					Key:   "vcs.modified",
-					Value: "true",
-				},
-				{
-					Key:   "vcs.revision",
-					Value: "becafe",
-				},
-				{
-					Key:   "vcs.time",
-					Value: "2006-01-02 15:04:05",
-				},
-			},
-		}
-
-		return &result, true
-	}
-
-	logoData := prepareLogoData(nil)
-
-	getBuildInfo = old
-
-	assert.Nil(t, logoData.Values)
-	assert.Equal(t, logoData.Geany.VcsModified, "*", "Geany.VcsModified is not *")
-	assert.Equal(t, logoData.Geany.VcsTime, "2006-01-02 15:04:05", "Geany.VcsTime is not desired timestamp")
-	assert.Equal(t, logoData.Geany.VcsRevision, "becafe", "Geany.VcsRevision is not 'becafe'")
-	assert.Equal(t, logoData.Geany.GoVersion, "go1.0", "Geany.GoVersion is not go1.0")
-}
-
 func TestPrintLogo(t *testing.T) {
-	f, fErr := os.CreateTemp("", "testPrintLogo")
+	tempFile, fErr := os.CreateTemp(t.TempDir(), "testPrintLogo")
 
-	assert.NoError(t, fErr)
+	require.NoError(t, fErr)
 
-	defer func() { assert.NoError(t, os.Remove(f.Name())) }()
+	defer func() { assert.NoError(t, os.Remove(tempFile.Name())) }()
 
 	save := os.Stdout
-	os.Stdout = f
+	os.Stdout = tempFile
 
-	printErr := PrintLogo(
+	printErr := geany.PrintLogo(
 		"Logo {{ .Geany.GoVersion }}",
 		nil)
 
 	os.Stdout = save
 
-	assert.NoError(t, printErr, "logo printing error")
+	require.NoError(t, printErr, "logo printing error")
 
 	buildInfo, ok := debug.ReadBuildInfo()
 
 	assert.True(t, ok, "build info not found in debug.ReadBuildInfo")
 
-	target, targetErr := os.ReadFile(f.Name())
-	assert.NoError(t, targetErr)
+	target, targetErr := os.ReadFile(tempFile.Name())
+	require.NoError(t, targetErr)
 
 	assert.Equal(t, string(target), "Logo "+buildInfo.GoVersion+"\n", "Logo does not contain go version")
 }
 
 func TestPrintSimple(t *testing.T) {
-	f, fErr := os.CreateTemp("", "testPrintLogo")
+	tempFile, fErr := os.CreateTemp(t.TempDir(), "testPrintLogo")
 
-	assert.NoError(t, fErr)
+	require.NoError(t, fErr)
 
-	defer func() { assert.NoError(t, os.Remove(f.Name())) }()
+	defer func() { assert.NoError(t, os.Remove(tempFile.Name())) }()
 
 	save := os.Stdout
-	os.Stdout = f
+	os.Stdout = tempFile
 
-	printErr := PrintSimple(nil)
+	printErr := geany.PrintSimple(nil)
 	os.Stdout = save
 
-	assert.NoError(t, printErr, "simple writer printing error")
+	require.NoError(t, printErr, "simple writer printing error")
 
 	buildInfo, ok := debug.ReadBuildInfo()
 
 	assert.True(t, ok, "build info not found in debug.ReadBuildInfo")
 
-	target, targetErr := os.ReadFile(f.Name())
-	assert.NoError(t, targetErr)
+	target, targetErr := os.ReadFile(tempFile.Name())
+	require.NoError(t, targetErr)
 
 	assert.Contains(t, string(target), `"GoVersion": "`+buildInfo.GoVersion+`"`)
 	assert.Contains(t, string(target), `"VcsModified": ""`)
@@ -135,24 +72,33 @@ func TestPrintSimple(t *testing.T) {
 }
 
 type BrokenNIO struct {
-	cnt int
-	N   int
+	cnt  int
+	From int
+	To   int
 }
 
 func (b *BrokenNIO) Read(in []byte) (n int, err error) {
-	if b.cnt < b.N || b.N == 0 {
+	if (b.cnt >= b.From || b.From == 0) &&
+		(b.cnt < b.To || b.To == 0) {
+
 		b.cnt++
+
 		return 0, errors.New("broken reader")
 	}
+	b.cnt++
 
 	return len(in), nil
 }
 
 func (b *BrokenNIO) Write(in []byte) (n int, err error) {
-	if b.cnt < b.N || b.N == 0 {
+	if (b.cnt >= b.From || b.From == 0) &&
+		(b.cnt < b.To || b.To == 0) {
+
 		b.cnt++
+
 		return 0, errors.New("broken writer")
 	}
+	b.cnt++
 
 	return len(in), nil
 }
@@ -160,34 +106,44 @@ func (b *BrokenNIO) Write(in []byte) (n int, err error) {
 func TestBrokenLogoWriter(t *testing.T) {
 	target := BrokenNIO{}
 
-	err := PrintLogoWriter(
+	err := geany.PrintLogoWriter(
 		&target,
 		"Logo {{ .Geany.GoVersion }}",
 		nil)
 
-	assert.Error(t, err, "simple writer printing error")
-	assert.Errorf(t, err, "broken writer")
-	assert.Equal(t, err.Error(), "broken writer\nbroken writer", "not two broken writer errors")
+	require.Error(t, err, "simple writer printing error")
+	require.Equal(t, "broken writer\ncould not write: broken writer", err.Error(), "not two broken writer errors")
 }
 
 func TestBrokenLogoWriterFallback(t *testing.T) {
-	target := BrokenNIO{N: 1}
+	target := BrokenNIO{To: 1}
 
-	err := PrintLogoWriter(
+	err := geany.PrintLogoWriter(
 		&target,
 		"Logo {{ .Geany.GoVersion }}",
 		nil)
 
-	assert.Error(t, err, "simple writer printing error")
-	assert.Errorf(t, err, "broken writer")
-	assert.Equal(t, err.Error(), "broken writer", "just one broken writer error")
+	require.Error(t, err, "simple writer printing error")
+	require.Equal(t, "broken writer", err.Error(), "just one broken writer error")
+}
+
+func TestBrokenLogoWriterAtEnd(t *testing.T) {
+	target := BrokenNIO{From: 2}
+
+	err := geany.PrintLogoWriter(
+		&target,
+		"Logo {{ .Geany.GoVersion }}",
+		nil)
+
+	require.Error(t, err, "simple writer printing error")
+	assert.Equal(t, "could not write: broken writer", err.Error(), "just one broken writer error")
 }
 
 func TestBrokenSimpleWriter(t *testing.T) {
 	target := BrokenNIO{}
 
-	assert.Error(t,
-		PrintSimpleWriter(
+	require.Error(t,
+		geany.PrintSimpleWriter(
 			&target,
 			nil),
 		"simple writer no printing error")
@@ -196,7 +152,7 @@ func TestBrokenSimpleWriter(t *testing.T) {
 func TestBrokenLogo(t *testing.T) {
 	assert.Panics(t,
 		func() {
-			_ = PrintLogo("{{ .Geany }", nil)
+			_ = geany.PrintLogo("{{ .Geany }", nil)
 		},
 		"broken logo does not panic")
 }
