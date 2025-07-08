@@ -72,26 +72,33 @@ func TestPrintSimple(t *testing.T) {
 }
 
 type BrokenNIO struct {
-	cnt int
-	N   int
+	cnt  int
+	From int
+	To   int
 }
 
 func (b *BrokenNIO) Read(in []byte) (n int, err error) {
-	if b.cnt < b.N || b.N == 0 {
+	if (b.cnt >= b.From || b.From == 0) &&
+		(b.cnt < b.To || b.To == 0) {
+
 		b.cnt++
 
 		return 0, errors.New("broken reader")
 	}
+	b.cnt++
 
 	return len(in), nil
 }
 
 func (b *BrokenNIO) Write(in []byte) (n int, err error) {
-	if b.cnt < b.N || b.N == 0 {
+	if (b.cnt >= b.From || b.From == 0) &&
+		(b.cnt < b.To || b.To == 0) {
+
 		b.cnt++
 
 		return 0, errors.New("broken writer")
 	}
+	b.cnt++
 
 	return len(in), nil
 }
@@ -109,7 +116,7 @@ func TestBrokenLogoWriter(t *testing.T) {
 }
 
 func TestBrokenLogoWriterFallback(t *testing.T) {
-	target := BrokenNIO{N: 1}
+	target := BrokenNIO{To: 1}
 
 	err := geany.PrintLogoWriter(
 		&target,
@@ -121,7 +128,7 @@ func TestBrokenLogoWriterFallback(t *testing.T) {
 }
 
 func TestBrokenLogoWriterAtEnd(t *testing.T) {
-	target := BrokenNIO{N: 2}
+	target := BrokenNIO{From: 2}
 
 	err := geany.PrintLogoWriter(
 		&target,
@@ -129,7 +136,7 @@ func TestBrokenLogoWriterAtEnd(t *testing.T) {
 		nil)
 
 	require.Error(t, err, "simple writer printing error")
-	assert.Equal(t, "broken writer\ncould not write: broken writer", err.Error(), "just one broken writer error")
+	assert.Equal(t, "could not write: broken writer", err.Error(), "just one broken writer error")
 }
 
 func TestBrokenSimpleWriter(t *testing.T) {

@@ -30,7 +30,7 @@ func TestPrepareLogoDataNormal(t *testing.T) {
 	assert.Empty(t, logoData.Geany.VcsModified, "Geany.VcsModified is not empty")
 	assert.Equal(t, "unknown", logoData.Geany.VcsTime, "Geany.VcsTime is not unknown")
 	assert.Equal(t, "unknown", logoData.Geany.VcsRevision, "Geany.VcsRevision is not unknown")
-	assert.Equal(t, "Geany.GoVersion is not "+buildInfo.GoVersion, logoData.Geany.GoVersion, buildInfo.GoVersion)
+	assert.Equal(t, buildInfo.GoVersion, logoData.Geany.GoVersion, "Geany.GoVersion is not "+buildInfo.GoVersion)
 }
 
 func TestPrepareLogoDataMocked(t *testing.T) {
