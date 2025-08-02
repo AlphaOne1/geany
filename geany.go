@@ -83,7 +83,7 @@ func PrintSimpleWriter(writer io.Writer, values any) error {
 	// normally we have the program's name given as the first argument
 	if len(os.Args) > 0 && os.Args[0] != "" {
 		if _, err := fmt.Fprintf(writer, "%s\n", os.Args[0]); err != nil {
-			return fmt.Errorf("could not write: %w", err)
+			return fmt.Errorf("could not write program name: %w", err)
 		}
 	}
 
@@ -96,7 +96,7 @@ func PrintSimpleWriter(writer io.Writer, values any) error {
 	}
 
 	if _, err := fmt.Fprintln(writer); err != nil {
-		return fmt.Errorf("could not write: %w", err)
+		return fmt.Errorf("could not write final newline: %w", err)
 	}
 
 	return nil

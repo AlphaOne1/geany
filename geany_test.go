@@ -114,7 +114,10 @@ func TestBrokenLogoWriter(t *testing.T) {
 		nil)
 
 	require.Error(t, err, "simple writer printing error")
-	require.Equal(t, "broken writer\ncould not write: broken writer", err.Error(), "not two broken writer errors")
+	require.Equal(t,
+		"broken writer\ncould not write program name: broken writer",
+		err.Error(),
+		"not two broken writer errors")
 }
 
 func TestBrokenLogoWriterFallback(t *testing.T) {
@@ -142,7 +145,7 @@ func TestBrokenLogoWriterAtEnd(t *testing.T) {
 		nil)
 
 	require.Error(t, err, "simple writer printing error")
-	assert.Equal(t, "could not write: broken writer", err.Error(), "just one broken writer error")
+	assert.Equal(t, "could not write final newline: broken writer", err.Error(), "just one broken writer error")
 }
 
 func TestBrokenSimpleWriter(t *testing.T) {
