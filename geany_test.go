@@ -104,6 +104,8 @@ func (b *BrokenNIO) Write(in []byte) (n int, err error) {
 }
 
 func TestBrokenLogoWriter(t *testing.T) {
+	t.Parallel()
+
 	target := BrokenNIO{}
 
 	err := geany.PrintLogoWriter(
@@ -112,10 +114,15 @@ func TestBrokenLogoWriter(t *testing.T) {
 		nil)
 
 	require.Error(t, err, "simple writer printing error")
-	require.Equal(t, "broken writer\ncould not write: broken writer", err.Error(), "not two broken writer errors")
+	require.Equal(t,
+		"broken writer\ncould not write program name: broken writer",
+		err.Error(),
+		"not two broken writer errors")
 }
 
 func TestBrokenLogoWriterFallback(t *testing.T) {
+	t.Parallel()
+
 	target := BrokenNIO{To: 1}
 
 	err := geany.PrintLogoWriter(
@@ -128,6 +135,8 @@ func TestBrokenLogoWriterFallback(t *testing.T) {
 }
 
 func TestBrokenLogoWriterAtEnd(t *testing.T) {
+	t.Parallel()
+
 	target := BrokenNIO{From: 2}
 
 	err := geany.PrintLogoWriter(
@@ -136,10 +145,12 @@ func TestBrokenLogoWriterAtEnd(t *testing.T) {
 		nil)
 
 	require.Error(t, err, "simple writer printing error")
-	assert.Equal(t, "could not write: broken writer", err.Error(), "just one broken writer error")
+	assert.Equal(t, "could not write final newline: broken writer", err.Error(), "just one broken writer error")
 }
 
 func TestBrokenSimpleWriter(t *testing.T) {
+	t.Parallel()
+
 	target := BrokenNIO{}
 
 	require.Error(t,
@@ -149,10 +160,48 @@ func TestBrokenSimpleWriter(t *testing.T) {
 		"simple writer no printing error")
 }
 
+func TestBrokenSimpleWriterUserData(t *testing.T) {
+	t.Parallel()
+
+	target := BrokenNIO{From: 1}
+
+	require.Error(t,
+		geany.PrintSimpleWriter(
+			&target,
+			nil),
+		"simple writer no printing error")
+}
+
+func TestBrokenSimpleWriterFinal(t *testing.T) {
+	t.Parallel()
+
+	target := BrokenNIO{From: 2}
+
+	require.Error(t,
+		geany.PrintSimpleWriter(
+			&target,
+			nil),
+		"simple writer no printing error")
+}
+
 func TestBrokenLogo(t *testing.T) {
-	assert.Panics(t,
-		func() {
-			_ = geany.PrintLogo("{{ .Geany }", nil)
-		},
-		"broken logo does not panic")
+	t.Parallel()
+
+	require.Error(t,
+		geany.PrintLogo("{{ .Geany }", nil),
+		"broken logo does produce error")
+}
+
+func TestLogoWriterNil(t *testing.T) {
+	t.Parallel()
+
+	require.ErrorIs(t,
+		geany.PrintLogoWriter(nil, "", nil),
+		geany.ErrWriterNil,
+		"nil writer does not produce error")
+
+	require.ErrorIs(t,
+		geany.PrintSimpleWriter(nil, nil),
+		geany.ErrWriterNil,
+		"nil writer does not produce error")
 }

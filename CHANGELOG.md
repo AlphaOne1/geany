@@ -1,3 +1,12 @@
+Release 0.1.2
+=============
+
+- introduced ErrWriterNil to catch nil writers
+- better parameter validation
+- better error messages
+- improved tests with configurable broken IO
+- added parallel annotation
+
 Release 0.1.1
 =============
 

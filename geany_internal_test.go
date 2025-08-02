@@ -20,6 +20,8 @@ func Must[T any](t T, err error) T {
 }
 
 func TestPrepareLogoDataNormal(t *testing.T) {
+	t.Parallel()
+
 	logoData := prepareLogoData(nil)
 
 	buildInfo, ok := debug.ReadBuildInfo()
@@ -34,6 +36,8 @@ func TestPrepareLogoDataNormal(t *testing.T) {
 }
 
 func TestPrepareLogoDataMocked(t *testing.T) {
+	t.Parallel()
+
 	old := getBuildInfo
 	getBuildInfo = func() (*debug.BuildInfo, bool) {
 		result := debug.BuildInfo{
