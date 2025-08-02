@@ -191,3 +191,17 @@ func TestBrokenLogo(t *testing.T) {
 		geany.PrintLogo("{{ .Geany }", nil),
 		"broken logo does produce error")
 }
+
+func TestLogoWriterNil(t *testing.T) {
+	t.Parallel()
+
+	require.ErrorIs(t,
+		geany.PrintLogoWriter(nil, "", nil),
+		geany.ErrWriterNil,
+		"nil writer does not produce error")
+
+	require.ErrorIs(t,
+		geany.PrintSimpleWriter(nil, nil),
+		geany.ErrWriterNil,
+		"nil writer does not produce error")
+}
