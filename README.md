@@ -28,7 +28,7 @@
     <a href="https://codecov.io/github/AlphaOne1/geany"
        rel="external noopener noreferrer"
        target="_blank">
-        <img src="https://codecov.io/github/AlphaOne1/geany/graph/badge.svg?token=SIQ3UG8OJI"
+        <img src="https://codecov.io/github/AlphaOne1/geany/graph/badge.svg"
              alt="Code Coverage">
     </a>
     <img src="https://img.shields.io/coderabbit/prs/github/AlphaOne1/geany"
