@@ -25,14 +25,18 @@
         <img src="https://goreportcard.com/badge/github.com/AlphaOne1/geany"
              alt="Go Report Card">
     </a>
-    <a href="https://codecov.io/github/AlphaOne1/geany"
+    <a href="https://app.codecov.io/gh/AlphaOne1/geany"
        rel="external noopener noreferrer"
        target="_blank">
-        <img src="https://codecov.io/github/AlphaOne1/geany/graph/badge.svg"
+        <img src="https://codecov.io/gh/AlphaOne1/geany/graph/badge.svg"
              alt="Code Coverage">
     </a>
-    <img src="https://img.shields.io/coderabbit/prs/github/AlphaOne1/geany"
-         alt="CodeRabbit Reviews">
+    <a href="https://coderabbit.ai"
+       rel="external noopener noreferrer"
+       target="_blank">
+       <img src="https://img.shields.io/coderabbit/prs/github/AlphaOne1/geany"
+            alt="CodeRabbit Reviews">
+    </a>
     <!--<a href="https://www.bestpractices.dev/projects/0000"
        rel="external noopener noreferrer"
        target="_blank">
