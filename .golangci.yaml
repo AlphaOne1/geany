@@ -1,4 +1,4 @@
-# Copyright the geany contributors.
+# SPDX-FileCopyrightText: 2025 The geany contributors.
 # SPDX-License-Identifier: MPL-2.0
 
 # Configuration file for golangci-lint
@@ -80,9 +80,6 @@ linters:
         mnd:
             ignored-numbers:
                 - "2"
-
-        paralleltest:
-            ignore-missing: true
 
         perfsprint:
             errorf: false

@@ -1,4 +1,4 @@
-# Copyright the geany contributors.
+# SPDX-FileCopyrightText: 2025 The geany contributors.
 # SPDX-License-Identifier: MPL-2.0
 
 name: Tests
@@ -84,7 +84,7 @@ jobs:
                 check-latest: true
 
           - name: Test
-            run: go run gotest.tools/gotestsum@latest --junitfile junit.xml -- -v `go list ./...` --covermode=count --coverpkg=./... --coverprofile=coverage.txt
+            run: go tool gotestsum --junitfile junit.xml -- -race -v `go list ./...` --covermode=atomic --coverpkg=./... --coverprofile=coverage.txt
 
           - name: Upload test results to Codecov
             if: ${{ !cancelled() }}
