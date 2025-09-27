@@ -45,7 +45,7 @@ Make sure you're using a recent Go version.
 You can run the test suite from the base folder using the following command:
 
 ```bash
-go test ./...
+go test -race ./...
 ```
 
 
