@@ -1,4 +1,4 @@
-// Copyright the geany contributors.
+// SPDX-FileCopyrightText: 2025 The geany contributors.
 // SPDX-License-Identifier: MPL-2.0
 
 package geany_test
@@ -15,6 +15,7 @@ import (
 	"github.com/AlphaOne1/geany"
 )
 
+//nolint:paralleltest // manipulating os.Stdout cannot be run in parallel
 func TestPrintLogo(t *testing.T) {
 	tempFile, fErr := os.CreateTemp(t.TempDir(), "testPrintLogo")
 
@@ -43,6 +44,7 @@ func TestPrintLogo(t *testing.T) {
 	assert.Equal(t, string(target), "Logo "+buildInfo.GoVersion+"\n", "Logo does not contain go version")
 }
 
+//nolint:paralleltest // manipulating os.Stdout cannot be run in parallel
 func TestPrintSimple(t *testing.T) {
 	tempFile, fErr := os.CreateTemp(t.TempDir(), "testPrintLogo")
 

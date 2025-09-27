@@ -1,4 +1,4 @@
-// Copyright the geany contributors.
+// SPDX-FileCopyrightText: 2025 The geany contributors.
 // SPDX-License-Identifier: MPL-2.0
 
 package geany
@@ -35,9 +35,8 @@ func TestPrepareLogoDataNormal(t *testing.T) {
 	assert.Equal(t, buildInfo.GoVersion, logoData.Geany.GoVersion, "Geany.GoVersion is not "+buildInfo.GoVersion)
 }
 
+//nolint:paralleltest // this test manipulates the global state
 func TestPrepareLogoDataMocked(t *testing.T) {
-	t.Parallel()
-
 	old := getBuildInfo
 	getBuildInfo = func() (*debug.BuildInfo, bool) {
 		result := debug.BuildInfo{
