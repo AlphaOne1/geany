@@ -14,30 +14,30 @@ linters:
     default: all
 
     disable:
-        - exhaustruct
-        - forbidigo
-        - noinlineerr
-        - nonamedreturns
-        - wsl
-        - wsl_v5
+      - exhaustruct
+      - forbidigo
+      - noinlineerr
+      - nonamedreturns
+      - wsl
+      - wsl_v5
 
     exclusions:
         warn-unused: true
 
         rules:
-            - path: _test\.go
-              linters:
-                  - cyclop
-                  - dupword
-                  - err113
-                  - funlen
-                  - gocognit
-                  - maintidx
-                  - nestif
+          - path: _test\.go
+            linters:
+              - cyclop
+              - dupword
+              - err113
+              - funlen
+              - gocognit
+              - maintidx
+              - nestif
 
-            - path: examples/
-              linters:
-                  - err113
+          - path: examples/
+            linters:
+                - err113
 
     settings:
         cyclop:
@@ -47,39 +47,39 @@ linters:
             rules:
                 main:
                     files:
-                        - $all
-                        - "!$test"
-                        - "!**/examples/**/*"
+                      - $all
+                      - "!$test"
+                      - "!**/examples/**/*"
                     allow:
-                        - $gostd
-                        - gopkg.in/yaml.v3
-                        - github.com/Masterminds/sprig/v3
+                      - $gostd
+                      - gopkg.in/yaml.v3
+                      - github.com/Masterminds/sprig/v3
                 test:
                     files:
-                        - $test
-                        - "**/examples/**/*"
+                      - $test
+                      - "**/examples/**/*"
                     allow:
-                        - $gostd
-                        - gopkg.in/yaml.v3
-                        - github.com/Masterminds/sprig/v3
-                        - github.com/AlphaOne1/geany
-                        - github.com/stretchr/testify/assert
-                        - github.com/stretchr/testify/require
+                      - $gostd
+                      - gopkg.in/yaml.v3
+                      - github.com/Masterminds/sprig/v3
+                      - github.com/AlphaOne1/geany
+                      - github.com/stretchr/testify/assert
+                      - github.com/stretchr/testify/require
 
         exhaustive:
             default-signifies-exhaustive: true
 
         ireturn:
             allow:
-                - anon
-                - empty
-                - error
-                - generic
-                - stdlib
+              - anon
+              - empty
+              - error
+              - generic
+              - stdlib
 
         mnd:
             ignored-numbers:
-                - "2"
+              - "2"
 
         perfsprint:
             errorf: false
