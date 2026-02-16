@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2025 The geany contributors.
+// SPDX-FileCopyrightText: 2026 The geany contributors.
 // SPDX-License-Identifier: MPL-2.0
 
 // Package main contains the geany example with embedded logo and custom data.
