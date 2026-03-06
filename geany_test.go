@@ -21,7 +21,7 @@ func TestPrintLogo(t *testing.T) {
 
 	require.NoError(t, fErr)
 
-	defer func() { assert.NoError(t, os.Remove(tempFile.Name())) }()
+	defer func() { assert.NoError(t, os.Remove(tempFile.Name())) }() //nolint:gosec
 
 	save := os.Stdout
 	os.Stdout = tempFile
@@ -38,7 +38,7 @@ func TestPrintLogo(t *testing.T) {
 
 	assert.True(t, ok, "build info not found in debug.ReadBuildInfo")
 
-	target, targetErr := os.ReadFile(tempFile.Name())
+	target, targetErr := os.ReadFile(tempFile.Name()) //nolint:gosec
 	require.NoError(t, targetErr)
 
 	assert.Equal(t, string(target), "Logo "+buildInfo.GoVersion+"\n", "Logo does not contain go version")
@@ -50,7 +50,7 @@ func TestPrintSimple(t *testing.T) {
 
 	require.NoError(t, fErr)
 
-	defer func() { assert.NoError(t, os.Remove(tempFile.Name())) }()
+	defer func() { assert.NoError(t, os.Remove(tempFile.Name())) }() //nolint:gosec
 
 	save := os.Stdout
 	os.Stdout = tempFile
@@ -64,7 +64,7 @@ func TestPrintSimple(t *testing.T) {
 
 	assert.True(t, ok, "build info not found in debug.ReadBuildInfo")
 
-	target, targetErr := os.ReadFile(tempFile.Name())
+	target, targetErr := os.ReadFile(tempFile.Name()) //nolint:gosec
 	require.NoError(t, targetErr)
 
 	assert.Contains(t, string(target), `"GoVersion": "`+buildInfo.GoVersion+`"`)
