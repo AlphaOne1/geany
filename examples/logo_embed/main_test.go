@@ -10,5 +10,6 @@ import (
 
 func TestMainGood( /* t */ *testing.T) {
 	os.Args = []string{"main"}
+
 	main()
 }
