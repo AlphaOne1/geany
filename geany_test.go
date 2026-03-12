@@ -21,7 +21,7 @@ func TestPrintLogo(t *testing.T) {
 
 	require.NoError(t, fErr)
 
-	defer func() { assert.NoError(t, os.Remove(tempFile.Name())) }() //nolint:gosec
+	defer func() { assert.NoError(t, os.Remove(tempFile.Name())) }()
 
 	save := os.Stdout
 	os.Stdout = tempFile
@@ -38,7 +38,7 @@ func TestPrintLogo(t *testing.T) {
 
 	assert.True(t, ok, "build info not found in debug.ReadBuildInfo")
 
-	target, targetErr := os.ReadFile(tempFile.Name()) //nolint:gosec
+	target, targetErr := os.ReadFile(tempFile.Name())
 	require.NoError(t, targetErr)
 
 	assert.Equal(t, string(target), "Logo "+buildInfo.GoVersion+"\n", "Logo does not contain go version")
@@ -50,7 +50,7 @@ func TestPrintSimple(t *testing.T) {
 
 	require.NoError(t, fErr)
 
-	defer func() { assert.NoError(t, os.Remove(tempFile.Name())) }() //nolint:gosec
+	defer func() { assert.NoError(t, os.Remove(tempFile.Name())) }()
 
 	save := os.Stdout
 	os.Stdout = tempFile
@@ -64,7 +64,7 @@ func TestPrintSimple(t *testing.T) {
 
 	assert.True(t, ok, "build info not found in debug.ReadBuildInfo")
 
-	target, targetErr := os.ReadFile(tempFile.Name()) //nolint:gosec
+	target, targetErr := os.ReadFile(tempFile.Name())
 	require.NoError(t, targetErr)
 
 	assert.Contains(t, string(target), `"GoVersion": "`+buildInfo.GoVersion+`"`)
@@ -79,7 +79,7 @@ type BrokenNIO struct {
 	To   int
 }
 
-func (b *BrokenNIO) Read(in []byte) (n int, err error) {
+func (b *BrokenNIO) Read(input []byte) (n int, err error) {
 	if (b.cnt >= b.From || b.From == 0) &&
 		(b.cnt < b.To || b.To == 0) {
 
@@ -87,12 +87,13 @@ func (b *BrokenNIO) Read(in []byte) (n int, err error) {
 
 		return 0, errors.New("broken reader")
 	}
+
 	b.cnt++
 
-	return len(in), nil
+	return len(input), nil
 }
 
-func (b *BrokenNIO) Write(in []byte) (n int, err error) {
+func (b *BrokenNIO) Write(input []byte) (n int, err error) {
 	if (b.cnt >= b.From || b.From == 0) &&
 		(b.cnt < b.To || b.To == 0) {
 
@@ -100,9 +101,10 @@ func (b *BrokenNIO) Write(in []byte) (n int, err error) {
 
 		return 0, errors.New("broken writer")
 	}
+
 	b.cnt++
 
-	return len(in), nil
+	return len(input), nil
 }
 
 func TestBrokenLogoWriter(t *testing.T) {
