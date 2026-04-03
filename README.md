@@ -5,6 +5,18 @@
 <!-- markdownlint-disable MD013 MD033 MD041 -->
 <p align="center">
     <!--<img src="geany_logo.svg" width="25%" alt="Logo"><br>-->
+    <a href="https://github.com/AlphaOne1/geany/blob/HEAD/go.mod"
+       rel="external noopener noreferrer"
+       target="_blank">
+        <img src="https://img.shields.io/github/go-mod/go-version/AlphaOne1/geany"
+             alt="Go Version">
+    </a>
+    <a href="https://github.com/AlphaOne1/geany/releases"
+       rel="external noopener noreferrer"
+       target="_blank">
+        <img src="https://img.shields.io/github/v/release/AlphaOne1/geany"
+             alt="Latest Release">
+    </a>
     <a href="https://github.com/AlphaOne1/geany/actions/workflows/test.yml"
        rel="external noopener noreferrer"
        target="_blank">
@@ -58,6 +70,12 @@
        target="_blank">
         <img src="https://api.reuse.software/badge/github.com/AlphaOne1/geany"
             alt="REUSE compliance">
+    </a>
+    <a href="https://slsa.dev"
+       rel="external noopener noreferrer"
+       target="_blank">
+        <img src="https://slsa.dev/images/gh-badge-level3.svg"
+             alt="SLSA Level 3">
     </a>
     <a href="https://app.fossa.com/projects/git%2Bgithub.com%2FAlphaOne1%2Fgeany?ref=badge_shield&issueType=license"
        rel="external noopener noreferrer"
@@ -115,6 +133,18 @@ To install *geany*, you can use the following command:
 
 ```bash
 $ go get github.com/AlphaOne1/geany
+```
+
+Builds are secured with SLSA Level 3 provenance via slsa-framework/slsa-github-generator.
+The downloaded source archive together with the provenance file `multiple.intoto.jsonl`
+can be verified using the [slsa-verifier](https://github.com/slsa-framework/slsa-verifier/)
+(replace the `<VERSION>` with the one you actually downloaded):
+
+```bash
+$ slsa-verifier verify-artifact geany-src-v<VERSION>.tar.gz \
+    --provenance-path multiple.intoto.jsonl                 \
+    --source-uri github.com/AlphaOne1/geany                 \
+    --source-tag v<VERSION>
 ```
 
 
