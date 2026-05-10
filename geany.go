@@ -40,6 +40,8 @@ var getBuildInfo = debug.ReadBuildInfo //nolint:gochecknoglobals
 
 // prepareLogoData collects the build information and the user-provided data
 // into a logoData structure.
+//
+//nolint:goconst // we prefer to see the string, even if it is repeated here, it is not intended for outside use
 func prepareLogoData(values any) logoData {
 	result := logoData{
 		Geany: geanyData{
