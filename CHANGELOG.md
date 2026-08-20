@@ -2,11 +2,12 @@
      SPDX-License-Identifier: MPL-2.0
 -->
 
-Release Next
+Release 0.1.4
 ============
 
-- updated the minimum required Go version to 1.25
+- updated the minimum required Go version to 1.26
 - restructured pipeline jobs
+- updated dependencies
 
 Release 0.1.3
 =============
