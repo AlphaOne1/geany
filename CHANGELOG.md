@@ -6,6 +6,7 @@ Release Next
 ============
 
 - integrated SBOM generation
+- changed to self-maintained GoReportCard
 
 Release 0.1.4
 ============
